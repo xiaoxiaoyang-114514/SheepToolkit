@@ -1,9 +1,8 @@
 // Name: SheepToolkit
 // ID: SheepToolkit
 // Description: Some strange blocks.
-// By: 小小羊 <QQ 1350519334>
+// By: 小小羊 <https://github.com/xiaoxiaoyang-114514/>
 // License: GPLv3
-
 
 class SheepToolkit {
   #KeyValueStore = {};
@@ -55,6 +54,19 @@ class SheepToolkit {
             c:{
               type:Scratch.ArgumentType.NUMBER
             }
+          }
+        },
+        {
+          opcode: 'StrSplitLength',
+          blockType: Scratch.BlockType.REPORTER,
+          text: '[a]按[b]分割的长度',
+          arguments:{
+            a:{
+              type:Scratch.ArgumentType.STRING
+            },
+            b:{
+              type:Scratch.ArgumentType.STRING
+            },
           }
         },
         {
@@ -353,21 +365,65 @@ class SheepToolkit {
           blockType:Scratch.BlockType.COMMAND,
           text:'删除所有键值对'
         },
+        {
+          blockType:'label',
+          text:'弹窗'
+        },
+        {
+          opcode:'NormalWindow',
+          blockType:Scratch.BlockType.COMMAND,
+          text:'显示提示窗口[a]',
+          arguments:{
+            a:{
+              type:Scratch.ArgumentType.STRING
+            }
+          }
+        },
+        {
+          opcode:'ConfirmWindow',
+          blockType:Scratch.BlockType.BOOLEAN,
+          text:'显示确认窗口[a]',
+          arguments:{
+            a:{
+              type:Scratch.ArgumentType.STRING
+            }
+          }
+        },
+        {
+          opcode:'InputWindow',
+          blockType:Scratch.BlockType.REPORTER,
+          text:'显示输入窗口[a], 默认值[b]',
+          arguments:{
+            a:{
+              type:Scratch.ArgumentType.STRING
+            },
+            b:{
+              type:Scratch.ArgumentType.STRING
+            }
+          }
+        },
       ],
       menus:{
         boolean:{
           acceptReporters:true,
           items:['真','假']
+        },
+        Types:{
+          acceptReporters:true,
+          items:['String','Number']
         }
       }
     };
   }
 
+  StrSplitLength(args){
+    return args.a.split(args.b).length;
+  }
   datetimes() {
     return Math.floor((Date.now())/1000);
   };
   datetimems(){
-    return(Date.now())
+    return(Date.now());
   };
   GetWeek(){
    const weekList = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
@@ -447,21 +503,33 @@ class SheepToolkit {
     this.#KeyValueStore[name] = {}
   };
   SetKey(args){
+    try{
     const name = args.a;
     const key = args.b;
     const value = args.c;
     this.#KeyValueStore[name][key] = value
+    }catch(e){
+      return('error');
+    }
   };
   ReturnKey(args){
+    try{
     const name = args.a;
     const key = args.b;
     const value = this.#KeyValueStore[name][key];
     return(value)
+    }catch(e){
+      return('error');
+    }
   };
   ReturnObj(args){
+    try{
     const name = args.a;
     const value = this.#KeyValueStore[name];
     return JSON.stringify(value)
+    }catch(e){
+      return('error')
+    }
   };
   StrCut(args){
     const str = String(args.a);
@@ -512,6 +580,15 @@ class SheepToolkit {
   ResetObj(){
     this.#KeyValueStore = {}
   };
+  NormalWindow(args){
+    alert(args.a);
+  };
+  ConfirmWindow(args){
+    return(confirm(args.a))
+  };
+  InputWindow(args){
+    return(prompt(args.a,args.b))
+  }
 }
 
 Scratch.extensions.register(new SheepToolkit());
